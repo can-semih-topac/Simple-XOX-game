@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>XOX Oyunu</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+        td {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #333;
+            text-align: center;
+            font-size: 2em;
+            cursor: pointer;
+        }
+        h1, #result {
+            text-align: center;
+        }
+        #resetBtn {
+            display: none;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>XOX Oyunu</h1>
+    <table>
+        <tr>
+            <td id="cell0" onclick="makeMove(this)"></td>
+            <td id="cell1" onclick="makeMove(this)"></td>
+            <td id="cell2" onclick="makeMove(this)"></td>
+        </tr>
+        <tr>
+            <td id="cell3" onclick="makeMove(this)"></td>
+            <td id="cell4" onclick="makeMove(this)"></td>
+            <td id="cell5" onclick="makeMove(this)"></td>
+        </tr>
+        <tr>
+            <td id="cell6" onclick="makeMove(this)"></td>
+            <td id="cell7" onclick="makeMove(this)"></td>
+            <td id="cell8" onclick="makeMove(this)"></td>
+        </tr>
+    </table>
+    <div id="result"></div>
+    <button id="resetBtn" onclick="resetGame()">Yeniden Oyna</button>
+    <script>
+        let moves = [];
+        let currentPlayer = 'X';
+        let gameOver = false;
+        
+        function makeMove(cell) {
+            if (gameOver) return;
+            if (cell.innerText === "") {
+                cell.innerText = currentPlayer;
+                moves.push(cell);
+                // 9. hamleden sonra ilk hamleyi kaldır (8 hamle sonrası)
+                if (moves.length > 6) {
+                    let oldCell = moves.shift();
+                    oldCell.innerText = "";
+                }
+                let winner = checkWinner();
+                if(winner) {
+                    gameOver = true;
+                    document.getElementById('result').innerText = winner + " kazandı!";
+                    document.getElementById('resetBtn').style.display = 'block';
+                } else {
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                }
+            }
+        }
+
+        function checkWinner() {
+            let cells = [];
+            for (let i = 0; i < 9; i++) {
+                cells.push(document.getElementById('cell' + i).innerText);
+            }
+            // Satır kontrolü
+            for (let i = 0; i < 3; i++) {
+                let start = i * 3;
+                if (cells[start] && cells[start] === cells[start + 1] && cells[start + 1] === cells[start + 2]) {
+                    return cells[start];
+                }
+            }
+            // Sütun kontrolü
+            for (let i = 0; i < 3; i++) {
+                if (cells[i] && cells[i] === cells[i + 3] && cells[i + 3] === cells[i + 6]) {
+                    return cells[i];
+                }
+            }
+            // Çapraz kontrolü
+            if (cells[0] && cells[0] === cells[4] && cells[4] === cells[8]) {
+                return cells[0];
+            }
+            if (cells[2] && cells[2] === cells[4] && cells[4] === cells[6]) {
+                return cells[2];
+            }
+            return "";
+        }
+
+        function resetGame() {
+            for (let i = 0; i < 9; i++) {
+                document.getElementById('cell' + i).innerText = "";
+            }
+            moves = [];
+            currentPlayer = 'X';
+            gameOver = false;
+            document.getElementById('result').innerText = "";
+            document.getElementById('resetBtn').style.display = 'none';
+        }
+    </script>
+</body>
+Can Semih Topaç
+</html>
